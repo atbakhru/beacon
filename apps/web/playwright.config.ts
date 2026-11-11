@@ -1,2 +1,21 @@
-import{defineConfig}from'@playwright/test';
-export default defineConfig({testDir:'./tests',fullyParallel:false,use:{baseURL:process.env.PLAYWRIGHT_BASE_URL||'http://localhost:5173',headless:true,launchOptions:{executablePath:process.env.CHROMIUM_PATH||undefined,args:['--no-sandbox']},trace:'retain-on-failure'},webServer:process.env.PLAYWRIGHT_BASE_URL?undefined:{command:'VITE_DEMO_MODE=true npm run dev',url:'http://localhost:5173',reuseExistingServer:!process.env.CI}});
+import { defineConfig } from "@playwright/test";
+export default defineConfig({
+  testDir: "./tests",
+  fullyParallel: false,
+  use: {
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || "http://localhost:5173",
+    headless: true,
+    launchOptions: {
+      executablePath: process.env.CHROMIUM_PATH || undefined,
+      args: ["--no-sandbox"],
+    },
+    trace: "retain-on-failure",
+  },
+  webServer: process.env.PLAYWRIGHT_BASE_URL
+    ? undefined
+    : {
+        command: "VITE_DEMO_MODE=true npm run dev",
+        url: "http://localhost:5173",
+        reuseExistingServer: !process.env.CI,
+      },
+});

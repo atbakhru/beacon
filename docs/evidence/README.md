@@ -4,6 +4,7 @@ Recorded on 2026-11-11 in a managed Linux development workspace. All telemetry i
 
 | Check | Result | Artifact |
 | --- | --- | --- |
+| GitHub CI | All three jobs passed (Go, web, full Docker pipeline) | [Verified run](https://github.com/atbakhru/beacon/actions/runs/43123691025) |
 | Go unit/integration tests, race detector | 9 tests passed, including concurrent writes, tenant-filtered vector search, correlation windows, and live WebSocket reconnect | [go-tests.txt](go-tests.txt) |
 | Browser demo | 3 Playwright journeys passed: lifecycle/search/1,000-alert burst/deduplication/persistence; URL filters; mobile layout | [browser-tests.txt](browser-tests.txt) |
 | Real backend browser journey | Real API, WebSocket, burst count, and related vector results | [live-browser.json](live-browser.json) |
@@ -32,7 +33,7 @@ Non-monotonic latency is expected in such a short shared-host run. Use `make ben
 ## Environment and verification limits
 
 - Go 1.27.4; Node 24.22.1; Python 3.12.14; PostgreSQL 16 + pgvector; Redis 7.4; Redpanda 25.2.2; system Chromium.
-- The managed host uses Docker's space-intensive `vfs` driver. For local validation, the PostgreSQL image was flattened without changing its filesystem; Go and Python ran as host processes against the real containerized dependencies. The checked-in Compose deployment uses the standard upstream image and container builds; the CI pipeline is configured to exercise that exact deployment.
+- The managed host uses Docker's space-intensive `vfs` driver. For local validation, the PostgreSQL image was flattened without changing its filesystem; Go and Python ran as host processes against the real containerized dependencies. The checked-in Compose deployment uses the standard upstream image and container builds. [GitHub CI run 43123691025](https://github.com/atbakhru/beacon/actions/runs/43123691025) passed the exact container build, seed, pipeline smoke, and live WebSocket test, alongside the Go and browser jobs.
 - AWS credentials were not configured. Terraform validation checks provider schemas and configuration, not resource availability, costs, successful provisioning, or production behavior.
 - No six-service deployment, production SLO, sub-10ms semantic search, or exhaustive recovery/backpressure coverage is claimed.
 
