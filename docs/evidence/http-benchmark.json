@@ -1,0 +1,31 @@
+{
+  "timestamp": "2026-11-11T23:49:18.170789+00:00",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "workload": "GET /v1/incidents?limit=50; loopback; 300 reads per concurrency; warm cache; Python client and Go API share host",
+  "results": [
+    {
+      "concurrency": 10,
+      "requests": 300,
+      "p50_ms": 5.56,
+      "p95_ms": 12.78,
+      "errors": 0,
+      "elapsed_seconds": 0.2
+    },
+    {
+      "concurrency": 50,
+      "requests": 300,
+      "p50_ms": 9.84,
+      "p95_ms": 35.32,
+      "errors": 0,
+      "elapsed_seconds": 0.22
+    },
+    {
+      "concurrency": 100,
+      "requests": 300,
+      "p50_ms": 6.13,
+      "p95_ms": 14.26,
+      "errors": 0,
+      "elapsed_seconds": 0.22
+    }
+  ]
+}

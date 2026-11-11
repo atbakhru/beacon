@@ -1,0 +1,12 @@
+{
+  "status": "passed",
+  "checks": [
+    "actual API data",
+    "live WebSocket connection",
+    "burst ingestion reflected in UI",
+    "learned vector matches in detail"
+  ],
+  "before": "1,203\nCorrelated",
+  "after": "1,213\nCorrelated",
+  "pageErrors": []
+}

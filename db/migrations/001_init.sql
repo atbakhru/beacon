@@ -1,0 +1,17 @@
+CREATE EXTENSION IF NOT EXISTS vector;
+CREATE TABLE IF NOT EXISTS organizations(id uuid PRIMARY KEY, slug text UNIQUE NOT NULL);
+CREATE TABLE IF NOT EXISTS services(id uuid PRIMARY KEY, org_id uuid NOT NULL REFERENCES organizations, name text NOT NULL, owner text NOT NULL DEFAULT '', tier text NOT NULL DEFAULT 'tier-1', UNIQUE(org_id,name));
+CREATE TABLE IF NOT EXISTS alerts(id uuid PRIMARY KEY, org_id uuid NOT NULL REFERENCES organizations, source_event_id text NOT NULL, service_id uuid NOT NULL REFERENCES services, signature text NOT NULL, severity text NOT NULL CHECK(severity IN ('critical','high','medium','low')), summary text NOT NULL, seen_at timestamptz NOT NULL, raw_json jsonb NOT NULL, processed boolean NOT NULL DEFAULT false, UNIQUE(org_id,source_event_id));
+CREATE TABLE IF NOT EXISTS incidents(id uuid PRIMARY KEY, org_id uuid NOT NULL REFERENCES organizations, service_id uuid NOT NULL REFERENCES services, signature text NOT NULL, title text NOT NULL, severity text NOT NULL CHECK(severity IN ('critical','high','medium','low')), state text NOT NULL DEFAULT 'open' CHECK(state IN ('open','acknowledged','resolved')), owner text NOT NULL DEFAULT '', opened_at timestamptz NOT NULL, updated_at timestamptz NOT NULL, closed_at timestamptz, alert_count int NOT NULL DEFAULT 0, version bigint NOT NULL DEFAULT 1);
+CREATE TABLE IF NOT EXISTS incident_alerts(incident_id uuid NOT NULL REFERENCES incidents, alert_id uuid PRIMARY KEY REFERENCES alerts);
+CREATE TABLE IF NOT EXISTS incident_events(id bigserial PRIMARY KEY, org_id uuid NOT NULL REFERENCES organizations, incident_id uuid NOT NULL REFERENCES incidents, type text NOT NULL, actor text NOT NULL, payload jsonb NOT NULL DEFAULT '{}', created_at timestamptz NOT NULL DEFAULT now());
+CREATE TABLE IF NOT EXISTS incident_embeddings(incident_id uuid PRIMARY KEY REFERENCES incidents ON DELETE CASCADE, embedding vector(384) NOT NULL, model_version text NOT NULL, incident_version bigint NOT NULL, updated_at timestamptz NOT NULL DEFAULT now());
+CREATE TABLE IF NOT EXISTS outbox_events(id bigserial PRIMARY KEY, topic text NOT NULL, key text NOT NULL, payload jsonb NOT NULL, published_at timestamptz, created_at timestamptz NOT NULL DEFAULT now());
+CREATE TABLE IF NOT EXISTS rules(id uuid PRIMARY KEY, org_id uuid NOT NULL REFERENCES organizations, name text NOT NULL, service_id uuid REFERENCES services, window_seconds int NOT NULL DEFAULT 900 CHECK(window_seconds BETWEEN 60 AND 86400), enabled boolean NOT NULL DEFAULT true);
+CREATE INDEX IF NOT EXISTS alerts_org_seen ON alerts(org_id,seen_at DESC,id);
+CREATE INDEX IF NOT EXISTS incidents_org_state_opened ON incidents(org_id,state,opened_at DESC,id);
+CREATE INDEX IF NOT EXISTS incidents_correlation ON incidents(org_id,service_id,signature,updated_at DESC) WHERE state <> 'resolved';
+CREATE INDEX IF NOT EXISTS incident_events_org_cursor ON incident_events(org_id,id);
+CREATE INDEX IF NOT EXISTS incident_events_incident_cursor ON incident_events(incident_id,id);
+CREATE INDEX IF NOT EXISTS outbox_pending ON outbox_events(id) WHERE published_at IS NULL;
+CREATE INDEX IF NOT EXISTS embeddings_hnsw ON incident_embeddings USING hnsw(embedding vector_cosine_ops);

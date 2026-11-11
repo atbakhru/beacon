@@ -1,0 +1,35 @@
+{
+  "model": "sentence-transformers/all-MiniLM-L6-v2",
+  "fixture": "4 hand-written paraphrases against 4 candidates; illustrative sanity check, not a representative evaluation",
+  "top1_accuracy": 0.75,
+  "results": [
+    {
+      "query": "No available database connections",
+      "expected": "Database connection pool exhausted",
+      "retrieved": "Database connection pool exhausted",
+      "correct": true,
+      "cosine": 0.6641
+    },
+    {
+      "query": "Card transactions taking too long",
+      "expected": "Payment authorization latency elevated",
+      "retrieved": "Notification queue processing delayed",
+      "correct": false,
+      "cosine": 0.3678
+    },
+    {
+      "query": "Users cannot validate authentication tokens",
+      "expected": "Token verification failures increasing",
+      "retrieved": "Token verification failures increasing",
+      "correct": true,
+      "cosine": 0.6366
+    },
+    {
+      "query": "Messages are stuck waiting to be delivered",
+      "expected": "Notification queue processing delayed",
+      "retrieved": "Notification queue processing delayed",
+      "correct": true,
+      "cosine": 0.5613
+    }
+  ]
+}

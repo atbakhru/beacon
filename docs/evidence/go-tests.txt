@@ -1,0 +1,21 @@
+?   	github.com/atbakhru/beacon/cmd/beacon	[no test files]
+=== RUN   TestLifecycle
+--- PASS: TestLifecycle (0.00s)
+=== RUN   TestAlertValidation
+--- PASS: TestAlertValidation (0.00s)
+=== RUN   TestConcurrentDedupeAndCorrelation
+--- PASS: TestConcurrentDedupeAndCorrelation (0.13s)
+=== RUN   TestGroupingSeverityWindowsAndLifecycle
+--- PASS: TestGroupingSeverityWindowsAndLifecycle (0.12s)
+=== RUN   TestTenantAuthorizationAndPagination
+--- PASS: TestTenantAuthorizationAndPagination (0.10s)
+=== RUN   TestConcurrentDifferentAlertsShareIncident
+--- PASS: TestConcurrentDifferentAlertsShareIncident (0.23s)
+=== RUN   TestVectorSearchTenantIsolation
+--- PASS: TestVectorSearchTenantIsolation (0.10s)
+=== RUN   TestCorrelationWindowBoundary
+--- PASS: TestCorrelationWindowBoundary (0.10s)
+=== RUN   TestLiveWebSocketResync
+--- PASS: TestLiveWebSocketResync (0.39s)
+PASS
+ok  	github.com/atbakhru/beacon/internal/beacon	2.201s

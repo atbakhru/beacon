@@ -1,0 +1,7 @@
+region = "us-east-1"
+frontend_origin = "https://your-frontend.example"
+certificate_arn = "arn:aws:acm:us-east-1:123456789012:certificate/replace-me"
+api_keys_secret_arn = "arn:aws:secretsmanager:us-east-1:123456789012:secret:beacon/api-keys-replace-me"
+allowed_client_cidrs = ["203.0.113.10/32"]
+desired_count = 0
+image_tag = "v1.0.0"

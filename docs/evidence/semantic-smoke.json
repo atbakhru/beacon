@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "checks": [
+    "durable ingest",
+    "duplicate idempotency",
+    "Kafka correlation",
+    "lifecycle",
+    "durable timeline",
+    "worker encoding",
+    "pgvector ranking"
+  ],
+  "elapsed_seconds": 0.55,
+  "model": "sentence-transformers/all-MiniLM-L6-v2"
+}

@@ -1,0 +1,69 @@
+name: beacon
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: beacon
+      POSTGRES_PASSWORD: beacon
+      POSTGRES_DB: beacon
+    ports: ["127.0.0.1:5432:5432"]
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U beacon"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+  redis:
+    image: redis:7.4-alpine
+    ports: ["127.0.0.1:6379:6379"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+  kafka:
+    image: redpandadata/redpanda:v25.2.2
+    command: ["redpanda", "start", "--smp", "1", "--memory", "512M", "--reserve-memory", "0M", "--overprovisioned", "--node-id", "0", "--check=false", "--kafka-addr", "internal://0.0.0.0:9092,external://0.0.0.0:19092", "--advertise-kafka-addr", "internal://kafka:9092,external://localhost:19092"]
+    ports: ["127.0.0.1:19092:19092"]
+    volumes: ["kafkadata:/var/lib/redpanda/data"]
+    healthcheck:
+      test: ["CMD", "rpk", "cluster", "info", "-X", "brokers=localhost:9092"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+  api:
+    build:
+      context: ../..
+      dockerfile: infra/docker/api.Dockerfile
+    environment:
+      DATABASE_URL: postgres://beacon:beacon@postgres:5432/beacon?sslmode=disable
+      REDIS_URL: redis://redis:6379
+      KAFKA_BROKERS: kafka:9092
+      EMBED_URL: http://embeddings:8091
+      DEMO_MODE: "true"
+      ALLOWED_ORIGINS: http://localhost:8088,http://localhost:5173
+    ports: ["127.0.0.1:8080:8080"]
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      kafka: {condition: service_healthy}
+    restart: unless-stopped
+  embeddings:
+    build:
+      context: ../../workers/embeddings
+      args:
+        SEMANTIC: ${SEMANTIC:-false}
+    environment:
+      DATABASE_URL: postgres://beacon:beacon@postgres:5432/beacon?sslmode=disable
+      KAFKA_BROKERS: kafka:9092
+      MODEL_NAME: ${MODEL_NAME:-feature-hash-v1}
+    depends_on: [api]
+    restart: unless-stopped
+  web:
+    build:
+      context: ../../apps/web
+    ports: ["127.0.0.1:8088:80"]
+    depends_on: [api]
+volumes:
+  pgdata:
+  kafkadata:

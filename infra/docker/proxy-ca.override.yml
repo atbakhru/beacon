@@ -1,0 +1,13 @@
+services:
+  api:
+    build:
+      secrets: [proxy_ca]
+  embeddings:
+    build:
+      secrets: [proxy_ca]
+  web:
+    build:
+      secrets: [proxy_ca]
+secrets:
+  proxy_ca:
+    file: ${CODEX_PROXY_CERT:?Set CODEX_PROXY_CERT to the trusted session CA path}
