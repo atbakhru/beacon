@@ -6,7 +6,7 @@ Recorded on 2026-11-11 in a managed Linux development workspace. All telemetry i
 | --- | --- | --- |
 | GitHub CI | All three jobs passed (Go, web, full Docker pipeline) | [Verified run](https://github.com/atbakhru/beacon/actions/runs/43123691025) |
 | Go unit/integration tests, race detector | 10 tests passed, including concurrent writes, tenant-filtered vector search, correlation windows, and live WebSocket reconnect | [go-tests.txt](go-tests.txt) |
-| Public GitHub Pages demo | HTTP 200; dashboard and 100-alert simulator verified in Chromium | [public-demo.json](public-demo.json) |
+| Public GitHub Pages demo | HTTP 200 for HTML, JavaScript, and CSS; local browser journeys passed; remote Chromium trust-store limit documented | [public-demo.json](public-demo.json) |
 | Browser demo | 3 Playwright journeys passed: lifecycle/search/1,000-alert burst/deduplication/persistence; URL filters; mobile layout | [browser-tests.txt](browser-tests.txt) |
 | Real backend browser journey | Real API, WebSocket, burst count, and related vector results | [live-browser.json](live-browser.json) |
 | Full Kafka pipeline, lexical vector baseline | Passed | [pipeline-smoke.json](pipeline-smoke.json) |
