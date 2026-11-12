@@ -316,3 +316,36 @@ func TestCorrelationWindowBoundary(t *testing.T) {
 		t.Fatalf("expected two window groups; got %+v %v", items, err)
 	}
 }
+
+func TestRecentAlertCursor(t *testing.T) {
+	s := testStore(t)
+	ctx := context.Background()
+	now := time.Now()
+	for n := 0; n < 5; n++ {
+		a := testAlert(fmt.Sprint(n))
+		a.SeenAt = now.Add(-time.Duration(n) * time.Minute)
+		if _, _, err := s.Ingest(ctx, DemoOrg, a); err != nil {
+			t.Fatal(err)
+		}
+	}
+	cursor := ""
+	var previous time.Time
+	seen := map[string]bool{}
+	for n := 0; n < 5; n++ {
+		items, err := s.Alerts(ctx, DemoOrg, "", "", cursor, 1)
+		if err != nil || len(items) != 1 {
+			t.Fatalf("page %d: %v", n, err)
+		}
+		a := items[0]
+		if seen[a.ID] || (!previous.IsZero() && a.SeenAt.After(previous)) {
+			t.Fatal("cursor skipped or reordered alerts")
+		}
+		seen[a.ID] = true
+		previous = a.SeenAt
+		cursor = a.ID
+	}
+	items, err := s.Alerts(ctx, DemoOrg, "", "", cursor, 1)
+	if err != nil || len(items) != 0 {
+		t.Fatal("expected exhausted cursor")
+	}
+}

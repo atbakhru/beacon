@@ -165,7 +165,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Opaque UUID cursor from previous page; ordering is by immutable UUID."
+            "description": "Last alert ID from the previous page; alerts are ordered newest first by immutable event time and ID."
           },
           {
             "name": "limit",
@@ -614,7 +614,12 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/AlertInput"
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/AlertInput"
+                  }
+                ],
+                "description": "source_event_id is overwritten with a unique manual event ID."
               }
             }
           }
@@ -1202,7 +1207,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Opaque UUID cursor from previous page; ordering is by immutable UUID."
+            "description": "Last alert ID from the previous page; alerts are ordered newest first by immutable event time and ID."
           },
           {
             "name": "limit",

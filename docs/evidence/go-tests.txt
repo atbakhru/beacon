@@ -6,16 +6,18 @@
 === RUN   TestConcurrentDedupeAndCorrelation
 --- PASS: TestConcurrentDedupeAndCorrelation (0.13s)
 === RUN   TestGroupingSeverityWindowsAndLifecycle
---- PASS: TestGroupingSeverityWindowsAndLifecycle (0.12s)
+--- PASS: TestGroupingSeverityWindowsAndLifecycle (0.13s)
 === RUN   TestTenantAuthorizationAndPagination
 --- PASS: TestTenantAuthorizationAndPagination (0.10s)
 === RUN   TestConcurrentDifferentAlertsShareIncident
---- PASS: TestConcurrentDifferentAlertsShareIncident (0.23s)
+--- PASS: TestConcurrentDifferentAlertsShareIncident (0.22s)
 === RUN   TestVectorSearchTenantIsolation
---- PASS: TestVectorSearchTenantIsolation (0.10s)
+--- PASS: TestVectorSearchTenantIsolation (0.11s)
 === RUN   TestCorrelationWindowBoundary
---- PASS: TestCorrelationWindowBoundary (0.10s)
+--- PASS: TestCorrelationWindowBoundary (0.08s)
+=== RUN   TestRecentAlertCursor
+--- PASS: TestRecentAlertCursor (0.07s)
 === RUN   TestLiveWebSocketResync
---- PASS: TestLiveWebSocketResync (0.39s)
+--- PASS: TestLiveWebSocketResync (0.44s)
 PASS
-ok  	github.com/atbakhru/beacon/internal/beacon	2.201s
+ok  	github.com/atbakhru/beacon/internal/beacon	2.316s

@@ -238,7 +238,7 @@ func (s *Store) Services(ctx context.Context, org string) ([]Service, error) {
 	return out, rows.Err()
 }
 func (s *Store) Alerts(ctx context.Context, org, id, incident, cursor string, limit int) ([]Alert, error) {
-	rows, err := s.DB.Query(ctx, `SELECT a.id,a.source_event_id,a.service_id,s.name,a.signature,a.severity,a.summary,a.seen_at,a.processed FROM alerts a JOIN services s ON s.id=a.service_id WHERE a.org_id=$1 AND ($2='' OR a.id::text=$2) AND ($3='' OR a.id IN (SELECT alert_id FROM incident_alerts WHERE incident_id::text=$3)) AND ($4='' OR a.id::text>$4) ORDER BY a.id LIMIT $5`, org, id, incident, cursor, limit)
+	rows, err := s.DB.Query(ctx, `SELECT a.id,a.source_event_id,a.service_id,s.name,a.signature,a.severity,a.summary,a.seen_at,a.processed FROM alerts a JOIN services s ON s.id=a.service_id WHERE a.org_id=$1 AND ($2='' OR a.id::text=$2) AND ($3='' OR a.id IN (SELECT alert_id FROM incident_alerts WHERE incident_id::text=$3)) AND ($4='' OR (a.seen_at,a.id)<(SELECT seen_at,id FROM alerts WHERE org_id=$1 AND id::text=$4)) ORDER BY a.seen_at DESC,a.id DESC LIMIT $5`, org, id, incident, cursor, limit)
 	if err != nil {
 		return nil, err
 	}
